@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lyrics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #09090b;
+      --surface: #121215;
+      --surface-2: #18181c;
+      --border: #242429;
+      --border-focus: #52525b;
+      --text: #f4f4f5;
+      --text-muted: #8e8e96;
+      --accent: #fafafa;
+      --accent-fg: #09090b;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      padding: 56px 24px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .layout {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 280px minmax(0, 480px) 280px;
+      gap: 32px;
+      justify-content: center;
+      align-items: start;
+    }
+
+    /* Sidebars */
+    .side-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-top: 58px;
+    }
+
+    .panel-heading {
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 15px;
+    }
+
+    /* Left: News & Updates */
+    .news-list {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .news-item {
+      padding: 14px 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .news-item:last-child {
+      border-bottom: none;
+    }
+
+    .news-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .news-title {
+      font-weight: 500;
+      font-size: 13.5px;
+      color: var(--text);
+    }
+
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      background: var(--surface-2);
+      white-space: nowrap;
+    }
+
+    .news-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Center: Header & Form */
+    header {
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 13.5px;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--surface);
+      padding: 3px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      margin-bottom: 22px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .tab-btn.active {
+      background: #222227;
+      color: var(--text);
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+      color: #d4d4d8;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .optional {
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 12px;
+    }
+
+    input, select, textarea {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 13.5px;
+      padding: 9px 11px;
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color 0.15s;
+      width: 100%;
+    }
+
+    input::placeholder, textarea::placeholder {
+      color: #52525b;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-focus);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+    }
+
+    .hp-wrap {
+      position: absolute;
+      left: -9999px;
+      opacity: 0;
+      pointer-events: none;
+      height: 0;
+      overflow: hidden;
+    }
+
+    .footer-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 4px;
+    }
+
+    .status-msg {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .status-msg.error { color: var(--danger); }
+    .status-msg.success { color: var(--success); }
+
+    .submit-btn {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity 0.15s;
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .submit-btn:hover:not(:disabled) { opacity: 0.9; }
+    .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Right: Download Goal */
+    .goal-numbers {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .goal-numbers span {
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 6px;
+      background: #222227;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 12px 0 10px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--text);
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    .goal-sub {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .cf-btn {
+      display: inline-block;
+      margin-top: 14px;
+      width: 100%;
+      text-align: center;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      padding: 7px 10px;
+      border-radius: 6px;
+      transition: border-color 0.15s;
+    }
+
+    .cf-btn:hover {
+      border-color: var(--border-focus);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+        max-width: 500px;
+        gap: 28px;
+      }
+      .side-panel {
+        padding-top: 0;
+      }
+      /* Keep form first on mobile, then news & goal */
+      .center-col { order: 1; }
+      .left-col { order: 2; }
+      .right-col { order: 3; }
+    }
+
+    @media (max-width: 480px) {
+      body { padding: 32px 16px; }
+      .row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+    <!-- LEFT SIDE: News & Updates -->
+    <aside class="side-panel left-col">
+      <h2 class="panel-heading">News & Updates</h2>
+      <div id="newsList" class="news-list"></div>
+    </aside>
+
+    <!-- CENTER: Bug Report / Suggestion Form -->
+    <main class="center-col">
+      <header>
+        <h1>Lyrics</h1>
+        <p class="subtitle">Report a bug or suggest an improvement directly to the developer.</p>
+      </header>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="tab-btn active" data-type="bug">Bug report</button>
+        <button type="button" class="tab-btn" data-type="suggestion">Suggestion</button>
+      </div>
+
+      <form id="feedbackForm" novalidate>
+        <div class="hp-wrap" aria-hidden="true">
+          <label for="company_website">Website</label>
+          <input type="text" id="company_website" name="company_website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label for="summary">Short summary</label>
+          <input
+            type="text"
+            id="summary"
+            required
+            maxlength="120"
+            placeholder="e.g. Lyrics overlay freezes when switching songs"
+          />
+        </div>
+
+        <div class="row" id="envRow">
+          <div class="field">
+            <label for="mcVersion">Minecraft version</label>
+            <input
+              type="text"
+              id="mcVersion"
+              class="mono"
+              maxlength="25"
+              placeholder="e.g. 1.21.1"
+            />
+          </div>
+          <div class="field">
+            <label for="loader">Mod loader</label>
+            <select id="loader">
+              <option value="Fabric">Fabric</option>
+              <option value="NeoForge">NeoForge</option>
+              <option value="Forge">Forge</option>
+              <option value="Quilt">Quilt</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="details">
+            <span id="detailsLabel">Steps to reproduce / what happened</span>
+          </label>
+          <textarea
+            id="details"
+            required
+            maxlength="1500"
+            placeholder="Describe what happened and how to reproduce it..."
+          ></textarea>
+        </div>
+
+        <div class="field" id="logField">
+          <label for="logLink">
+            <span>Crash log or mclo.gs link</span>
+            <span class="optional">Optional</span>
+          </label>
+          <input
+            type="text"
+            id="logLink"
+            class="mono"
+            maxlength="300"
+            placeholder="https://mclo.gs/..."
+          />
+        </div>
+
+        <div class="field">
+          <label for="contact">
+            <span>Discord or GitHub username</span>
+            <span class="optional">Optional, for follow-up</span>
+          </label>
+          <input
+            type="text"
+            id="contact"
+            maxlength="50"
+            placeholder="username"
+          />
+        </div>
+
+        <div class="footer-bar">
+          <span id="statusMsg" class="status-msg"></span>
+          <button type="submit" id="submitBtn" class="submit-btn">Send report</button>
+        </div>
+      </form>
+    </main>
+
+    <!-- RIGHT SIDE: CurseForge Download Goal -->
+    <aside class="side-panel right-col">
+      <h2 class="panel-heading">Download Goal</h2>
+      <div class="card">
+        <div class="goal-numbers">
+          <strong id="currentDownloads">...</strong>
+          <span>/ <span id="goalDownloads">5,000</span> downloads</span>
+        </div>
+        <div class="progress-track">
+          <div id="goalProgress" class="progress-fill"></div>
+        </div>
+        <div class="goal-sub">
+          <span id="goalPercent">0% reached</span>
+          <span>CurseForge</span>
+        </div>
+        <a
+          href="https://www.curseforge.com/minecraft/mc-mods/lyrics"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="cf-btn"
+        >
+          View on CurseForge ↗
+        </a>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    /**
+     * ====================================================================
+     * DEVELOPER CONFIG (Edit directly in your GitHub repo)
+     * ====================================================================
+     */
+    const SITE_CONFIG = {
+      curseforgeSlug: "minecraft/mc-mods/lyrics",
+      fallbackDownloads: 1250,
+      downloadGoal: 5000,
+
+      news: [
+        {
+          title: "V4 is coming in mid November",
+          tag: "Upcoming",
+          desc: "Major update currently in development, scheduled to release around mid-November."
+        }
+      ]
+    };
+
+    /**
+     * ====================================================================
+     * APP LOGIC & ANTI-SPAM
+     * ====================================================================
+     */
+    const WEBHOOK_URL = "https://discord.com/api/webhooks/1565367902394126518/Q9SAy5OSoPud3LElxhPmntiyqF0GgIWirDgGIrmd15wQvNsDGwG27m2fDUc1PcOrYqiX";
+    const COOLDOWN_MS = 60 * 1000;
+    const MIN_FILL_TIME_MS = 3000;
+    const pageLoadTime = Date.now();
+
+    let currentType = "bug";
+
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    const form = document.getElementById("feedbackForm");
+    const envRow = document.getElementById("envRow");
+    const logField = document.getElementById("logField");
+    const summaryInput = document.getElementById("summary");
+    const detailsInput = document.getElementById("details");
+    const detailsLabel = document.getElementById("detailsLabel");
+    const submitBtn = document.getElementById("submitBtn");
+    const statusMsg = document.getElementById("statusMsg");
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function initSidePanels() {
+      const newsEl = document.getElementById("newsList");
+      newsEl.innerHTML = SITE_CONFIG.news.map(item => `
+        <div class="news-item">
+          <div class="news-top">
+            <span class="news-title">${escapeHtml(item.title)}</span>
+            ${item.tag ? `<span class="badge">${escapeHtml(item.tag)}</span>` : ""}
+          </div>
+          ${item.desc ? `<p class="news-desc">${escapeHtml(item.desc)}</p>` : ""}
+        </div>
+      `).join("");
+
+      updateGoalUI(SITE_CONFIG.fallbackDownloads);
+      fetchCurseForgeDownloads();
+    }
+
+    function updateGoalUI(downloads) {
+      const goal = SITE_CONFIG.downloadGoal;
+      const pct = Math.min(100, Math.round((downloads / goal) * 100));
+
+      document.getElementById("currentDownloads").textContent = downloads.toLocaleString("en-US");
+      document.getElementById("goalDownloads").textContent = goal.toLocaleString("en-US");
+      document.getElementById("goalProgress").style.width = `${pct}%`;
+      document.getElementById("goalPercent").textContent = `${pct}% reached`;
+    }
+
+    async function fetchCurseForgeDownloads() {
+      try {
+        const res = await fetch(`https://api.cfwidget.com/${SITE_CONFIG.curseforgeSlug}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.downloads && typeof data.downloads.total === "number") {
+          updateGoalUI(data.downloads.total);
+        }
+      } catch (_) {
+        // Keeps fallbackDownloads if API fails
+      }
+    }
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tabBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentType = btn.dataset.type;
+
+        if (currentType === "bug") {
+          envRow.classList.remove("hidden");
+          logField.classList.remove("hidden");
+          summaryInput.placeholder = "e.g. Lyrics overlay freezes when switching songs";
+          detailsLabel.textContent = "Steps to reproduce / what happened";
+          detailsInput.placeholder = "Describe what happened and how to reproduce it...";
+          submitBtn.textContent = "Send report";
+        } else {
+          envRow.classList.add("hidden");
+          logField.classList.add("hidden");
+          summaryInput.placeholder = "e.g. Option to adjust background blur opacity";
+          detailsLabel.textContent = "How should it work?";
+          detailsInput.placeholder = "Explain the feature or improvement you have in mind...";
+          submitBtn.textContent = "Send suggestion";
+        }
+        setStatus("", "");
+      });
+    });
+
+    function setStatus(text, type) {
+      statusMsg.textContent = text;
+      statusMsg.className = "status-msg" + (type ? " " + type : "");
+    }
+
+    function cleanText(str) {
+      return (str || "")
+        .trim()
+        .replace(/@(everyone|here)/gi, "@\u200b$1")
+        .replace(/<@[!&]?\d+>/g, "[mention]");
+    }
+
+    function simpleHash(str) {
+      let h = 0;
+      for (let i = 0; i < str.length; i++) {
+        h = (Math.imul(31, h) + str.charCodeAt(i)) | 0;
+      }
+      return String(h);
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      setStatus("", "");
+
+      if (document.getElementById("company_website").value) {
+        setStatus("Sent. Thanks for the feedback.", "success");
+        form.reset();
+        return;
+      }
+
+      if (Date.now() - pageLoadTime < MIN_FILL_TIME_MS) {
+        setStatus("Please wait a moment before submitting.", "error");
+        return;
+      }
+
+      const lastSent = Number(localStorage.getItem("lyrics_last_ts") || 0);
+      const remaining = Math.ceil((COOLDOWN_MS - (Date.now() - lastSent)) / 1000);
+      if (remaining > 0) {
+        setStatus(`Please wait ${remaining}s before sending another message.`, "error");
+        return;
+      }
+
+      const summary = cleanText(summaryInput.value);
+      const details = cleanText(detailsInput.value);
+      const mcVersion = cleanText(document.getElementById("mcVersion").value) || "Not specified";
+      const loader = cleanText(document.getElementById("loader").value);
+      const logLink = cleanText(document.getElementById("logLink").value);
+      const contact = cleanText(document.getElementById("contact").value);
+
+      if (summary.length < 4) {
+        setStatus("Please enter a clearer summary.", "error");
+        summaryInput.focus();
+        return;
+      }
+
+      if (details.length < 10) {
+        setStatus("Please provide a bit more detail.", "error");
+        detailsInput.focus();
+        return;
+      }
+
+      if (currentType === "bug" && !document.getElementById("mcVersion").value.trim()) {
+        setStatus("Please specify your Minecraft version.", "error");
+        document.getElementById("mcVersion").focus();
+        return;
+      }
+
+      const payloadHash = simpleHash(`${currentType}:${summary.toLowerCase()}:${details.toLowerCase()}`);
+      if (localStorage.getItem("lyrics_last_hash") === payloadHash) {
+        setStatus("You already sent this exact message.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.textContent = "Sending...";
+
+      const isBug = currentType === "bug";
+      const fields = [];
+
+      if (isBug) {
+        fields.push(
+          { name: "Minecraft", value: `\`${mcVersion}\``, inline: true },
+          { name: "Loader", value: `\`${loader}\``, inline: true }
+        );
+        if (logLink) {
+          fields.push({ name: "Log / Link", value: logLink, inline: false });
+        }
+      }
+
+      if (contact) {
+        fields.push({ name: "Contact", value: `\`${contact}\``, inline: true });
+      }
+
+      const payload = {
+        username: "Lyrics Feedback",
+        allowed_mentions: { parse: [] },
+        embeds: [
+          {
+            title: `${isBug ? "[Bug]" : "[Suggestion]"} ${summary}`,
+            description: details,
+            color: isBug ? 0xef4444 : 0xe4e4e7,
+            fields: fields,
+            timestamp: new Date().toISOString()
+          }
+        ]
+      };
+
+      try {
+        const res = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+        localStorage.setItem("lyrics_last_ts", String(Date.now()));
+        localStorage.setItem("lyrics_last_hash", payloadHash);
+
+        form.reset();
+        setStatus("Sent. Thanks for the feedback.", "success");
+      } catch (err) {
+        setStatus("Failed to send. Please try again later.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+      }
+    });
+
+    initSidePanels();
+  </script>
+</body>
+</html>
